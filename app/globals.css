@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #4a4b4b;
     --foreground: #ededed;
   }
 }
@@ -19,3 +19,16 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ALERT BAR animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Move by half the total width to show seamless transition */
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 20s linear infinite;
+  width: 200%; /* Double the width to accommodate both sets of content */
+}
+
