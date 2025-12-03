@@ -140,9 +140,9 @@ const Hero = () => {
               </div>
             </div>
           ))}
-          <div className="rounded-xl border border-dashed border-sky-200 bg-sky-50 p-5 text-sky-800">
+          {/*<div className="rounded-xl border border-dashed border-sky-200 bg-sky-50 p-5 text-sky-800">
             Want to feature your agency alerts? <Link href="/about" className="font-semibold underline">Partner with CADET</Link>.
-          </div>
+          </div> */}
         </div>
        </div>
      </section>
