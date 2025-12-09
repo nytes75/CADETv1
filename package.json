@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "globe.gl": "^2.45.0",
+    "leaflet": "^1.9.4",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-leaflet": "^5.0.0",
     "three": "^0.181.2"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
