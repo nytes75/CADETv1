@@ -1,85 +1,77 @@
 'use client'
 
-import React from 'react'
-
-interface WeatherTabProps {
-  regions: string[]
-  provincesByRegion: Record<string, string[]>
-  districtsByProvince: Record<string, string[]>
-  region: string
-  setRegion: (r: string) => void
-  province: string
-  setProvince: (p: string) => void
-  district: string
-  setDistrict: (d: string) => void
-  weatherData: any
+interface WeatherCondition {
+  shortDescription: string
+  briefDescription: string
+  description: string
 }
 
-export default function WeatherTab({
-  regions,
-  provincesByRegion,
-  districtsByProvince,
-  region,
-  setRegion,
-  province,
-  setProvince,
-  district,
-  setDistrict,
-  weatherData,
-}: WeatherTabProps) {
+interface WeatherCurrent {
+  temp: number | string
+  condition: WeatherCondition
+  feelsLike: number | string
+  humidity: number | string
+  windSpeed: number | string
+  pressure: number | string
+  uvIndex: number | string
+}
+
+interface WeatherThreeHourly {
+  hour: string
+  icon: string
+  temp: number | string
+  chance: string
+}
+
+interface WeatherDaily {
+  day: string
+  icon: string
+  condition: string
+  high: number | string
+  low: number | string
+  chance: string
+}
+
+interface WeatherScenario {
+  region: string
+  province: string
+  district: string
+  current: WeatherCurrent
+  threeHourly: WeatherThreeHourly[]
+  daily: WeatherDaily[]
+}
+
+interface WeatherAlert {
+  icon: string
+  title: string
+  description: string
+}
+
+interface RegionAlert {
+  region: string
+  alerts: WeatherAlert[]
+}
+
+interface WeatherData {
+  districts: WeatherScenario[]
+  regionAlerts: RegionAlert[]
+}
+
+interface WeatherTabProps {
+  region: string
+  province: string
+  district: string
+  weatherData: WeatherData
+}
+
+export default function WeatherTab({ region, province, district, weatherData }: WeatherTabProps) {
   const scenario = weatherData.districts.find(
-    (d: any) => d.region === region && d.province === province && d.district === district
+    (d) => d.region === region && d.province === province && d.district === district
   )
-  const regionAlert = weatherData.regionAlerts.find((r: any) => r.region === region)
+  const regionAlert = weatherData.regionAlerts.find((r) => r.region === region)
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-12 space-y-6">
-      {/* Dropdown menu */}
-      <div className="flex flex-wrap gap-4 items-center bg-white p-6 rounded-2xl shadow-md ring-1 ring-gray-100">
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Region</label>
-          <select
-            value={region}
-            onChange={e => setRegion(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {regions.map(r => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Province</label>
-          <select
-            value={province}
-            onChange={e => setProvince(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {provincesByRegion[region].map(p => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Town/District</label>
-          <select
-            value={district}
-            onChange={e => setDistrict(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {districtsByProvince[province].map(d => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
+    <section className="mx-auto max-w-5xl px-6 py-6 space-y-6">
       {/* Current Weather Card */}
       <div className="rounded-2xl bg-white shadow-md ring-1 ring-gray-100 p-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -87,8 +79,9 @@ export default function WeatherTab({
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Current Conditions</p>
             <div className="mt-4">
               <div className="text-6xl font-bold text-gray-900">{scenario ? scenario.current.temp : '--'}°</div>
-              <p className="mt-2 text-xl text-gray-700">{scenario ? scenario.current.condition : 'N/A'}</p>
+              <p className="mt-2 text-xl text-gray-700">{scenario ? scenario.current.condition.briefDescription : 'N/A'}</p>
               <p className="mt-1 text-sm text-gray-600">Feels like {scenario ? scenario.current.feelsLike : '--'}°</p>
+              <p className="mt-1 text-sm text-gray-500 italic">{scenario ? scenario.current.condition.description : ''}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -117,7 +110,7 @@ export default function WeatherTab({
         <h2 className="text-2xl font-bold text-gray-900">Active Advisories</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
           {regionAlert &&
-            regionAlert.alerts.map((alert: any, idx: number) => (
+            regionAlert.alerts.map((alert, idx) => (
               <div key={idx} className="rounded-xl bg-white shadow-sm ring-1 ring-gray-100 p-5">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{alert.icon}</span>
@@ -134,10 +127,10 @@ export default function WeatherTab({
 
       {/* Hourly Forecast */}
       <div className="rounded-2xl bg-white shadow-md ring-1 ring-gray-100 p-6">
-        <h2 className="text-2xl font-bold text-gray-900">Hourly Forecast</h2>
+        <h2 className="text-2xl font-bold text-gray-900">3-Hourly Forecast</h2>
         <div className="mt-4 flex gap-3 overflow-x-auto pb-4">
           {scenario &&
-            scenario.hourly.map((hour: any, idx: number) => (
+            scenario.threeHourly.map((hour, idx) => (
               <div key={idx} className="min-w-max rounded-lg bg-sky-50 p-4 text-center ring-1 ring-sky-200">
                 <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">{hour.hour}</p>
                 <p className="my-2 text-2xl">{hour.icon}</p>
@@ -154,7 +147,7 @@ export default function WeatherTab({
         <h2 className="text-2xl font-bold text-gray-900">5-Day Forecast</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {scenario &&
-            scenario.daily.map((day: any, idx: number) => (
+            scenario.daily.map((day, idx) => (
               <div key={idx} className="rounded-lg bg-sky-50 p-4 ring-1 ring-sky-200">
                 <p className="font-semibold text-sky-700">{day.day}</p>
                 <p className="my-2 text-3xl text-center">{day.icon}</p>
@@ -174,3 +167,4 @@ export default function WeatherTab({
     </section>
   )
 }
+

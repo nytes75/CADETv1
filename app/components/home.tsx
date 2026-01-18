@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import weatherData from "../data/weather-scenarios.json"
 
 const stats = [
   { label: "Active Alerts", value: "12", context: "across PNG provinces" },
@@ -8,19 +9,47 @@ const stats = [
   { label: "Response Partners", value: "30+", context: "coordinated agencies" },
 ]
 
-const weatherTicker = [
-  { location: "Port Moresby", temperature: "31°C", condition: "Humid" },
-  { location: "Lae", temperature: "30°C", condition: "Cloudy" },
-  { location: "Goroka", temperature: "25°C", condition: "Showers" },
-  { location: "Rabaul", temperature: "29°C", condition: "Clear" },
-  { location: "Madang", temperature: "28°C", condition: "Breezy" },
-]
+// Map JSON data to Ticker format
+const weatherTicker = weatherData.districts.map((d) => ({
+  location: d.district,
+  temperature: `${d.current.temp}°C`,
+  condition: d.current.condition.shortDescription,
+}))
 
-const advisories = [
-  { area: "Highlands", type: "Heavy rain", severity: "Orange", detail: "River levels rising in Jiwaka and Simbu." },
-  { area: "Momase", type: "Strong winds", severity: "Yellow", detail: "Coastal gusts expected overnight near Lae." },
-  { area: "Islands", type: "Volcanic haze", severity: "Yellow", detail: "Light ash fall possible around Rabaul." },
-]
+// Map Alert Level to Severity Color/Label
+const getSeverity = (level: string) => {
+  switch (level) {
+    case "alert":
+      return "Red"
+    case "warning":
+      return "Orange"
+    case "info":
+    default:
+      return "Yellow"
+  }
+}
+
+const getSeverityStyles = (severity: string) => {
+  switch (severity) {
+    case "Red":
+      return "bg-red-100 text-red-800"
+    case "Orange":
+      return "bg-orange-100 text-orange-800"
+    case "Yellow":
+    default:
+      return "bg-amber-100 text-amber-800"
+  }
+}
+
+// Map JSON alerts to Advisories format
+const advisories = weatherData.regionAlerts.flatMap((r) =>
+  r.alerts.map((a) => ({
+    area: r.region,
+    type: a.title,
+    severity: getSeverity(a.level),
+    detail: a.description,
+  }))
+)
 
 const initiatives = [
   {
@@ -82,11 +111,11 @@ const Hero = () => {
       </div>
     </section>
   )
- }
- 
+}
 
- const AlertBar = () => {
-   return (
+
+const AlertBar = () => {
+  return (
     <div className="border-b border-gray-200 bg-white py-4 shadow-sm">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-6 text-sm text-gray-700">
         <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-800">
@@ -103,15 +132,15 @@ const Hero = () => {
                 {data.temperature} · {data.condition}
               </span>
             ))}
-           </div>
+          </div>
         </div>
-       </div>
-     </div>
+      </div>
+    </div>
   )
 }
- 
- const AlertMap = () => {
-   return (
+
+const AlertMap = () => {
+  return (
     <section className="bg-gray-50 py-12">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 lg:grid-cols-2">
         <div className="rounded-2xl bg-white p-6 shadow-md ring-1 ring-gray-100">
@@ -123,9 +152,9 @@ const Hero = () => {
           <div className="mt-6 h-72 rounded-xl bg-gradient-to-br from-sky-100 via-white to-sky-50 ring-1 ring-gray-100" aria-label="Map placeholder" />
         </div>
         <div className="space-y-4">
-          {advisories.map((advisory) => (
+          {advisories.map((advisory, idx) => (
             <div
-              key={advisory.area}
+              key={`${advisory.area}-${idx}`}
               className="flex items-start gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100"
             >
               <div className="mt-1 h-3 w-3 rounded-full bg-sky-600" aria-hidden />
@@ -133,7 +162,7 @@ const Hero = () => {
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">{advisory.area}</p>
                   <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">{advisory.type}</span>
-                  <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">{advisory.severity}</span>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${getSeverityStyles(advisory.severity)}`}>{advisory.severity}</span>
                 </div>
                 <p className="mt-2 text-base font-semibold text-gray-900">{advisory.detail}</p>
                 <p className="text-sm text-gray-600">Updated 15 minutes ago</p>
@@ -144,14 +173,14 @@ const Hero = () => {
             Want to feature your agency alerts? <Link href="/about" className="font-semibold underline">Partner with CADET</Link>.
           </div> */}
         </div>
-       </div>
-     </section>
+      </div>
+    </section>
   )
- }
- 
+}
 
- const EventHolder = () => {
-   return (
+
+const EventHolder = () => {
+  return (
     <section className="bg-sky-900 py-14 text-white">
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -173,7 +202,7 @@ const Hero = () => {
               <div className="flex items-center justify-between">
                 <h4 className="text-xl font-semibold">{item.name}</h4>
                 <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-sky-100">{item.status}</span>
-               </div>
+              </div>
               <p className="mt-3 text-sky-100">{item.description}</p>
               <div className="mt-auto pt-4 text-sm text-sky-200">Co-design sessions open</div>
             </article>
@@ -205,10 +234,10 @@ const Hero = () => {
               </li>
             </ul>
           </div>
-         </div>
-       </div>
-     </section>
+        </div>
+      </div>
+    </section>
   )
 }
- 
+
 export { Hero, AlertBar, AlertMap, EventHolder }

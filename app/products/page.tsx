@@ -49,7 +49,7 @@ const Page = () => {
       <Navbar/>
 
       <header className="bg-gradient-to-r from-sky-900 via-sky-800 to-sky-600 text-white">
-        <div className="container mx-auto px-4 py-12 lg:py-16">
+        <div className="mx-auto max-w-5xl px-6 py-8 lg:py-10">
           <p className="text-sm uppercase tracking-[0.2em] text-sky-200">CADET Products</p>
           <h1 className="mt-3 text-4xl lg:text-5xl font-bold">Purpose-built tools for climate resilience</h1>
           <p className="mt-4 max-w-3xl text-lg text-sky-100">
@@ -58,7 +58,7 @@ const Page = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 space-y-12">
+      <main className="mx-auto max-w-5xl px-6 py-12 space-y-12">
         <section>
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>

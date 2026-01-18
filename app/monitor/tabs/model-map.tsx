@@ -1,98 +1,8 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import React from 'react'
 
 export default function ModelMapTab() {
-  const mapContainer = useRef<HTMLDivElement>(null)
-  const map = useRef<L.Map | null>(null)
-
-  useEffect(() => {
-    if (!mapContainer.current || map.current) return
-
-    // Initialize map centered on Papua New Guinea
-    // Coordinates: PNG center ~ -6°, 147° with extent to Singapore and Solomon Islands
-    map.current = L.map(mapContainer.current).setView([-5.5, 145], 6)
-
-    // Add tile layer from OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 19,
-    }).addTo(map.current)
-
-    // Load Natural Earth countries GeoJSON
-    const fetchGeoJSON = async () => {
-      try {
-        const response = await fetch(
-          'https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.geojson'
-        )
-        const geojsonData = await response.json()
-
-        // Filter countries in the region (PNG, Singapore, Solomon Islands, Australia, Indonesia)
-        const regionCountries = ['Papua New Guinea', 'Singapore', 'Solomon Islands', 'Australia', 'Indonesia']
-
-        const filteredData = {
-          ...geojsonData,
-          features: geojsonData.features.filter((feature: any) =>
-            regionCountries.includes(feature.properties.ADMIN)
-          ),
-        }
-
-        // Add GeoJSON layer with styling
-        L.geoJSON(filteredData, {
-          style: (feature) => {
-            let color = '#3b82f6' // Default blue
-
-            // Highlight PNG in red
-            if (feature?.properties?.ADMIN === 'Papua New Guinea') {
-              color = '#ef4444'
-            }
-            // Highlight Solomon Islands in orange
-            else if (feature?.properties?.ADMIN === 'Solomon Islands') {
-              color = '#f97316'
-            }
-            // Highlight Singapore in green
-            else if (feature?.properties?.ADMIN === 'Singapore') {
-              color = '#22c55e'
-            }
-
-            return {
-              fillColor: color,
-              weight: 2,
-              opacity: 0.8,
-              color: '#000',
-              fillOpacity: 0.3,
-            }
-          },
-          onEachFeature: (feature, layer) => {
-            const props = feature.properties
-            const popup = `
-              <div class="p-2">
-                <strong>${props.ADMIN}</strong><br/>
-                <small>Population: ${props.POP_EST?.toLocaleString() || 'N/A'}</small><br/>
-                <small>Area: ${props.AREA_KM2?.toLocaleString() || 'N/A'} km²</small>
-              </div>
-            `
-            layer.bindPopup(popup)
-          },
-        }).addTo(map.current!)
-      } catch (error) {
-        console.error('Error loading GeoJSON:', error)
-      }
-    }
-
-    fetchGeoJSON()
-
-    return () => {
-      // Cleanup on unmount
-      if (map.current) {
-        map.current.remove()
-        map.current = null
-      }
-    }
-  }, [])
-
   return (
     <section className="mx-auto max-w-5xl px-6 py-12 space-y-6">
       <div className="rounded-2xl bg-white shadow-md ring-1 ring-gray-100 p-8">
@@ -122,13 +32,12 @@ export default function ModelMapTab() {
           ))}
         </div>
 
-        {/* Interactive Leaflet Map */}
-        <div className="rounded-xl overflow-hidden ring-1 ring-gray-300">
-          <div 
-            ref={mapContainer}
-            className="h-96 w-full bg-gray-100"
-            style={{ minHeight: '24rem' }}
-          />
+        {/* Placeholder */}
+        <div className="rounded-xl border border-dashed border-sky-300 bg-sky-50/70 p-8 text-center text-gray-700">
+          <p className="text-lg font-semibold text-gray-900">Map placeholder</p>
+          <p className="mt-2 text-sm text-gray-600">
+            The map preview is temporarily unavailable. It will return here once the new data pipeline is ready.
+          </p>
         </div>
       </div>
 

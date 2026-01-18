@@ -40,59 +40,87 @@ const Page = () => {
     <div className="flex min-h-screen flex-col bg-white text-gray-900">
       <Navbar />
       <main className="flex-1">
-        {/* Header Section with Sky Gradient */}
+        {/* Header Section with Sky Gradient (compact) */}
         <section className="bg-gradient-to-r from-sky-900 via-sky-800 to-sky-600 text-white">
-          <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16">
-            <p className="text-sm font-semibold uppercase tracking-widest text-sky-200">Monitoring</p>
-            <h1 className="mt-3 text-4xl font-bold lg:text-5xl">Papua New Guinea Operations Center</h1>
-            <p className="mt-4 max-w-3xl text-lg text-sky-100">Monitor weather, climate patterns, and operational models across PNG.</p>
-
-            {/* Tab Navigation */}
-            <div className="mt-8 flex gap-2 border-b border-white/20">
-              {['weather', 'climate', 'model-map'].map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-3 font-semibold capitalize transition ${
-                    activeTab === tab ? 'border-b-2 border-white text-white' : 'text-sky-100 hover:text-white'
-                  }`}
-                >
-                  {tab === 'model-map' ? 'Model Map' : tab}
-                </button>
-              ))}
-            </div>
+          <div className="mx-auto max-w-5xl px-6 py-4 lg:py-6">
+            <h1 className="text-xl font-semibold lg:text-2xl">Monitoring for now</h1>
           </div>
         </section>
 
+        {/* Compact Tab Navigation */}
+        <div className="mx-auto max-w-5xl px-6 py-3">
+          <div className="flex gap-2 border-b border-sky-200/20">
+            {['weather', 'climate', 'model-map'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-2 text-sm font-semibold capitalize transition ${
+                  activeTab === tab
+                    ? 'border-b-2 border-sky-600 text-sky-900'
+                    : 'text-sky-700 hover:text-sky-900'
+                }`}
+              >
+                {tab === 'model-map' ? 'Model Map' : tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Location selectors */}
+        {activeTab !== 'model-map' && (
+          <div className="mx-auto max-w-5xl px-6 py-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-sky-700 mb-1">Region</label>
+                <select
+                  value={region}
+                  onChange={e => setRegion(e.target.value)}
+                  className="rounded-md px-3 py-2 text-gray-900 border border-gray-300"
+                >
+                  {regions.map(r => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-sky-700 mb-1">Province</label>
+                <select
+                  value={province}
+                  onChange={e => setProvince(e.target.value)}
+                  className="rounded-md px-3 py-2 text-gray-900 border border-gray-300"
+                >
+                  {provincesByRegion[region].map(p => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-sky-700 mb-1">Town/District</label>
+                <select
+                  value={district}
+                  onChange={e => setDistrict(e.target.value)}
+                  className="rounded-md px-3 py-2 text-gray-900 border border-gray-300"
+                >
+                  {districtsByProvince[province].map(d => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Content based on active tab */}
         {activeTab === 'weather' && (
-          <WeatherTab
-            regions={regions}
-            provincesByRegion={provincesByRegion}
-            districtsByProvince={districtsByProvince}
-            region={region}
-            setRegion={setRegion}
-            province={province}
-            setProvince={setProvince}
-            district={district}
-            setDistrict={setDistrict}
-            weatherData={weatherData}
-          />
+          <WeatherTab region={region} province={province} district={district} weatherData={weatherData} />
         )}
-        {activeTab === 'climate' && (
-          <ClimateTab
-            regions={regions}
-            provincesByRegion={provincesByRegion}
-            districtsByProvince={districtsByProvince}
-            region={region}
-            setRegion={setRegion}
-            province={province}
-            setProvince={setProvince}
-            district={district}
-            setDistrict={setDistrict}
-            weatherData={weatherData}
-          />
-        )}
+        {activeTab === 'climate' && <ClimateTab />}
         {activeTab === 'model-map' && <ModelMapTab />}
       </main>
       <Footer />

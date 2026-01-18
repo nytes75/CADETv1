@@ -1,79 +1,8 @@
 'use client'
 
-import React from 'react'
-
-interface ClimateTabProps {
-  regions: string[]
-  provincesByRegion: Record<string, string[]>
-  districtsByProvince: Record<string, string[]>
-  region: string
-  setRegion: (r: string) => void
-  province: string
-  setProvince: (p: string) => void
-  district: string
-  setDistrict: (d: string) => void
-  weatherData: any
-}
-
-export default function ClimateTab({
-  regions,
-  provincesByRegion,
-  districtsByProvince,
-  region,
-  setRegion,
-  province,
-  setProvince,
-  district,
-  setDistrict,
-  weatherData,
-}: ClimateTabProps) {
+export default function ClimateTab() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-12 space-y-6">
-      {/* Dropdown menu */}
-      <div className="flex flex-wrap gap-4 items-center bg-white p-6 rounded-2xl shadow-md ring-1 ring-gray-100">
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Region</label>
-          <select
-            value={region}
-            onChange={e => setRegion(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {regions.map(r => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Province</label>
-          <select
-            value={province}
-            onChange={e => setProvince(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {provincesByRegion[region].map(p => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-sky-700 mb-1">Town/District</label>
-          <select
-            value={district}
-            onChange={e => setDistrict(e.target.value)}
-            className="rounded-lg px-3 py-2 text-gray-900 border border-gray-300"
-          >
-            {districtsByProvince[province].map(d => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+    <section className="mx-auto max-w-5xl px-6 py-6 space-y-6">
       <div className="rounded-2xl bg-white shadow-md ring-1 ring-gray-100 p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Climate Patterns & Analysis</h2>
         <p className="text-gray-700 mb-6">

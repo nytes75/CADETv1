@@ -1,8 +1,9 @@
 "use client"
  
- const navigation = [
+const navigation = [
   { name: "About", href: "/about" },
   { name: "Monitor", href: "/monitor" },
+  { name: "Map", href: "/map" },
   { name: "Products", href: "/products" },
   { name: "Projects", href: "/projects" },
  ]
@@ -33,12 +34,6 @@ import React from "react"
               {item.name}
             </Link>
            ))}
-          <Link
-            href="/products"
-            className="hidden rounded-lg bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-sky-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg sm:inline-flex"
-          >
-            Explore
-          </Link>
          </div>
        </div>
      </nav>
@@ -46,4 +41,3 @@ import React from "react"
  }
  
  export default Navbar
-
